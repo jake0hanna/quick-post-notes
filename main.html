@@ -3,88 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Box to Text File</title>
+    <title>Report Fill Tool</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Text Box to Text File</h1>
 
-    <h3>Job Start Time</h3>
-    <textarea id="textBox1" rows="4" cols="50" placeholder="Enter text for box 1"></textarea>
-    <br>
-    <h3>Job End Time</h3>
-    <textarea id="textBox2" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <h3>Tech Notes</h3>
-    <textarea id="textBox3" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <h3>Mount</h3>
-    <textarea id="textBox4" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <h3>Wire</h3>
-    <textarea id="textBox5" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <h3>Length of Wire Used</h3>
-    <textarea id="textBox6" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <h3>Available Towers/Scans</h3>
-    <textarea id="textBox7" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <h3>More Notes</h3>
-    <textarea id="textBox8" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <textarea id="textBox9" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <textarea id="textBox10" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <textarea id="textBox11" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <textarea id="textBox12" rows="4" cols="50" placeholder="Enter text for box 2"></textarea>
-    <br>
-    <!-- Add more text boxes as needed -->
+    <h1>Report Fill Tool</h1>
+    <div class="textAreaContainer" id="textAreaContainer"></div>
 
-    <br>
-    <button onclick="openNewWindow()">Generate Text in New Window</button>
+    <h3>    
+    <button onclick="generateCombinedText()">Copy to Clipboard</button>
+    </h3>
 
-    <script>
-        function openNewWindow() {
-            var textBox1Content = document.getElementById("textBox1").value;
-            var textBox2Content = document.getElementById("textBox2").value;
-            var textBox3Content = document.getElementById("textBox3").value;
-            var textBox4Content = document.getElementById("textBox4").value;
-            var textBox5Content = document.getElementById("textBox5").value;
-            var textBox6Content = document.getElementById("textBox6").value;
-            var textBox7Content = document.getElementById("textBox7").value;
-            var textBox8Content = document.getElementById("textBox8").value;
-            var textBox9Content = document.getElementById("textBox9").value;
-            var textBox10Content = document.getElementById("textBox10").value;
-            var textBox11Content = document.getElementById("textBox11").value;
-            var textBox12Content = document.getElementById("textBox12").value;
-            // Add more variables for additional text boxes
+    <h3>
+    <button onclick="clearTextBoxes()">Clear Text Boxes</button>
+    </h3>
 
-
-            var combinedText = "Job Start Time:\n" + textBox1Content + "\n\n";
-            combinedText += "Job End Time:\n" + textBox2Content + "\n\n";
-            combinedText += "Tech Notes:\n" + textBox3Content + "\n\n";
-            combinedText += "Mount:\n" + textBox4Content + "\n\n";
-            combinedText += "Wire:\n" + textBox5Content + "\n\n";
-            combinedText += "Length of Wire Used:\n" + textBox6Content + "\n\n";
-            combinedText += "Available Towers/Scans:\n" + textBox7Content + "\n\n";
-            combinedText += "Box 8 Content:\n" + textBox8Content + "\n\n";
-            combinedText += "Box 9 Content:\n" + textBox9Content + "\n\n";
-            combinedText += "Box 10 Content:\n" + textBox10Content + "\n\n";
-            combinedText += "Box 11 Content:\n" + textBox11Content + "\n\n";
-            combinedText += "Box 12 Content:\n" + textBox12Content + "\n\n";
-            // Concatenate additional text box contents as needed
-
-            // Open a new window and write the combined text to it
-            var newWindow = window.open('', '_blank');
-            
-            newWindow.document.write('<pre>' + combinedText + '</pre>');
-
-        }
-        
-    </script>
-
+    <script src="scripts.js"></script>
 
 </body>
 
