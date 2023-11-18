@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ticketBuilder</title>
+<style>
+	* {
+padding: 0px;
+margin: 0px;
+}
+
+body {
+background-color: white;
+width: 100vw;
+height: 100vh;
+min-width: 100px;
+}
+
+nav {
+height: 40px;
+width: 100vw;
+background-color: black;
+color: white;
+font-size: 20pt;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.nav-ticketBuilder:hover {
+color: gray;
+cursor: pointer;
+}
+
+.main-content {
+height: calc(100vh - 40px);
+width: 100vw;
+background-color: white;
+display: flex;
+justify-content: flex-start;
+
+}
+</style>
+
+</head>
+<body>
+<nav>
+<span class="nav-ticketBuilder-container"><span class="nav-ticketBuilder">ticketBuilder</span></span>
+
+
+</nav>
+<div class="main-content" id="display">
+
+</div>
+
+<script>
+const button = document.getElementById("button1");
+const display = document.getElementById("display");
+
+display.addEventListener("click", async () => {
+
+	const content = await navigator.clipboard.readText();
+
+	const rx = content.match(/.*(?=\nNOISE FLOOR -\d{2} dBm\n\d\n\d\nLOCAL RX)/gm);
+	
+	const tx = content.match(/.*(?=\nNOISE FLOOR -\d{2} dBm\n\d\n\d\nREMOTE RX)/gm);
+
+	const modulation = content.match(/\dx/gm);
+
+	const capacity = content.match(/.*(?=\nMbps)/gm);
+		
+	let ticket;
+
+	if(rx == null && tx == null && modulation == null && capacity == null) {
+		ticket = "ticketBuilder couldn't find what it was looking for. Try copying the radio contents again."
+	} else {
+		ticket = "Reason for Calling In:\nRadio Signal - RX: "
+	+rx[0]+
+	" TX: "
+	+tx[0]+
+	".\nModulation: "
+	+modulation[0]+
+	" / "
+	+modulation[1]+
+	".\nCapacity: "
+	+capacity[0]+
+	" / "
+	+capacity[2];
+
+	await navigator.clipboard.writeText(ticket);
+
+	}
+
+	display.innerText = ticket;
+	
+})
+
+
+
+
+
+/*
+Reason for Calling In: 
+Radio Signal - RX: TX: Modulation: Capacity: Router Model: Action Taken: Resolution and How the Call Ended: Further Action Needed:
+
+*/ 
+
+
+
+</script>
+</body>
+</html>
+
+
+

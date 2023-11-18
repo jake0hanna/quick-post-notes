@@ -61,55 +61,6 @@
             var textBox12Content = document.getElementById("textBox12").value;
             // Add more variables for additional text boxes
 
-            /*
-            Job Information
-Job Start time:
-Job End time:
-Tech notes:
-Mount:
-Wire:
-Length of Wire Used:
-Available Towers/Scans:
-
-Radio Information
-Signal-RX: TX:
-Modulation:
-Noise Floor:
-Radio and Distance:
-500 Dish Has Cover: (If applicable)
-Firmware:
-LAN Speed:
-Programming:
-Best Scanned Sector:
-Inventory:
-
-Pictures
-Safety Pic:
-Dashboard:
-LOS:
-Mount Footing:
-From Ground:
-Wire Run:
-Outside Penetration:
-Inside Penetration:
-POE/Router Location:
-Radio Tag:
-POE Tag:
-Surge Box Tag: (If Applicable)
-Router Tag: (If Applicable)
-Speed Test:
-Other:
-
- <script>
-        function openNewWindow() {
-            var combinedText = '';
-
-            for (var i = 1; i <= 20; i++) {
-                var textBoxContent = document.getElementById("textBox" + i).value;
-                combinedText += "Box " + i + " Content: " + textBoxContent + " | ";
-            }
-
-            */
 
             var combinedText = "Job Start Time:\n" + textBox1Content + "\n\n";
             combinedText += "Job End Time:\n" + textBox2Content + "\n\n";
@@ -127,8 +78,11 @@ Other:
 
             // Open a new window and write the combined text to it
             var newWindow = window.open('', '_blank');
+            
             newWindow.document.write('<pre>' + combinedText + '</pre>');
+
         }
+        
     </script>
 
 
