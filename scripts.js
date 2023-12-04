@@ -2,6 +2,8 @@
         var textAreaPlaceholder = 'Enter text here...';
 
         document.addEventListener('DOMContentLoaded', initialLoad);
+        document.getElementById('inputBox').addEventListener('input', parse);
+        
 
         let jobInfo = 
         {
@@ -398,7 +400,7 @@
 
         }
 
-        function initialLoad() 
+        function initialLoad()  
         {
 
             var container = document.getElementById('textAreaContainer');
