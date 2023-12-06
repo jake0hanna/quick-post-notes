@@ -1,13 +1,38 @@
         var combinedText = '';
         var textAreaPlaceholder = 'Enter text here...';
 
+        //these need to wait until the entire page is loaded to run:
         document.addEventListener('DOMContentLoaded', initialLoad);
         document.getElementById('inputBox').addEventListener('input', parse);
+
+        var textAreas = [
+            {id: "inputBox", label: "Parse Text:"},
+            {id: "currentOutput", label: "Current Output:"},
+        ];
+
+        var buttons = [
+
+            {id: "safetyPicButton", label: "Safety: "},
+            {id: "dashboardPicButton", label: "Dashboard: "},
+            {id: "LOSPicButton", label: "LOS: "},
+            {id: "mountFootingPicButton", label: "Mount Footing: "},
+            {id: "fromGroundPicButton", label: "From Ground: "},
+            {id: "wireRunPicButton", label: "Wire Run: "},
+            {id: "outsidePenetrationPicButton", label: "Outside Penetration: "},
+            {id: "insidePenetrationPicButton", label: "Inside Penetration: "},
+            {id: "POERouterPicButton", label: "POE Router: "},
+            {id: "radioTagPicButton", label: "Radio Tag: "},
+            {id: "POETagPicButton", label: "POE Tag: "},
+            {id: "surgeBoxTagPicButton", label: "Surge Box Tag: "},
+            {id: "routerTagPicButton", label: "Router Tag: "},
+            {id: "speedTestPicButton", label: "Speed Test: "},
+
+        ];
 
 
         const info = 
         [
-            {heading: "Job Info \n", sectionHeader: ''},
+            {heading: "Job Info", sectionHeader: ''},
 
             {heading: "Start Time: ", contents: ''},
             {heading: "End Time: ", contents: ''},
@@ -17,7 +42,7 @@
             {heading: "Length of Wire: ", contents: ''},
             {heading: "Available Towers: ", contents: ''},
 
-            {heading: "\nRadio Info \n", sectionHeader: ''},
+            {heading: "\nRadio Info", sectionHeader: ''},
 
             {heading: "Signal RX: ", contents: ''},
             {heading: "Signal TX: ", contents: ''},
@@ -31,11 +56,11 @@
             {heading: "Programming: ", contents: ''},
             {heading: "Best Scanned Sector: ", contents: ''},
 
-            {heading: "\nInventory Info \n", sectionHeader: ''},
+            {heading: "\nInventory Info", sectionHeader: ''},
 
             {heading: "Speed Test Jitter: ", contents: ''},
 
-            {heading: "\nRouter Info \n", sectionHeader: ''},
+            {heading: "\nRouter Info", sectionHeader: ''},
 
             {heading: "Router Model: ", contents: ''},
             {heading: "Router Channels: ", contents: ''},
@@ -109,7 +134,7 @@
             regexMappings.forEach(mapping => {
                 let cip = mapping.regExp.exec(string);
                 if(cip){
-                    mapping.target = cip[1];
+                    mapping.target.contents = cip[1];
                 }
             });
             
@@ -128,7 +153,10 @@
 
                 if("sectionHeader" in mapping && mapping.heading != "\nInventory Info \n")
                 {
-                    addTextIfNotEmpty(infoValues[0], infoValues[1]);
+                    if("contents" in mapping)
+                        addTextIfNotEmpty(mapping.heading, mapping.contents);
+                    else
+                        addTextIfNotEmpty(mapping.heading, '');
                 }
                 else
                 {
@@ -181,7 +209,8 @@
 
         }
 
-        function copyToClipBoard(copyableText){
+        function copyToClipBoard(copyableText)
+        {
             navigator.clipboard.writeText(copyableText).then(function() 
             {
                alert("Text copied to clipboard");
@@ -203,38 +232,12 @@
                 textarea.value = '';
             });
 
-
-
         }
 
         function initialLoad()  
         {
 
             var container = document.getElementById('textAreaContainer');
-
-            var textAreas = [
-                {id: "inputBox", label: "Parse Text:"},
-                {id: "currentOutput", label: "Current Output:"},
-            ];
-
-            var buttons = [
-
-                {id: "safetyPicButton", label: "Safety: "},
-                {id: "dashboardPicButton", label: "Dashboard: "},
-                {id: "LOSPicButton", label: "LOS: "},
-                {id: "mountFootingPicButton", label: "Mount Footing: "},
-                {id: "fromGroundPicButton", label: "From Ground: "},
-                {id: "wireRunPicButton", label: "Wire Run: "},
-                {id: "outsidePenetrationPicButton", label: "Outside Penetration: "},
-                {id: "insidePenetrationPicButton", label: "Inside Penetration: "},
-                {id: "POERouterPicButton", label: "POE Router: "},
-                {id: "radioTagPicButton", label: "Radio Tag: "},
-                {id: "POETagPicButton", label: "POE Tag: "},
-                {id: "surgeBoxTagPicButton", label: "Surge Box Tag: "},
-                {id: "routerTagPicButton", label: "Router Tag: "},
-                {id: "speedTestPicButton", label: "Speed Test: "},
-
-            ];
 
             textAreas.forEach(function(textArea) 
             {
