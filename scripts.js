@@ -3,7 +3,7 @@
 
         document.addEventListener('DOMContentLoaded', initialLoad);
         document.getElementById('inputBox').addEventListener('input', parse);
-        
+
 
         let jobInfo = 
         {
@@ -60,6 +60,33 @@
             supportTab: '',
             routerJitter: '',
         }
+
+        const regexMappings = 
+        [
+            {regExp: startTimeRegExp, target: jobInfo.startTime},
+            {regExp: endTimeRegExp, target: jobInfo.endTime},
+            {regExp: techNotesRegExp, target: jobInfo.techNotes},
+            {regExp: mountRegExp, target: jobInfo.mount},
+            {regExp: typeOfWireRegExp, target: jobInfo.typeOfWire},
+            {regExp: wireLengthRegExp, target: jobInfo.wireLength},
+            {regExp: availableTowersRegExp, target: jobInfo.availableTowers},
+            {regExp: signalRXRegExp, target: radioInfo.signalRX},
+            {regExp: signalTXRegExp, target: radioInfo.signalTX},
+            {regExp: modulationRegExp, target: radioInfo.modulation},
+            {regExp: noiseFloorRegExp, target: radioInfo.noiseFloor},
+            {regExp: radioAndDistanceRegExp, target: radioInfo.radioAndDistance},
+            {regExp: dishCoverRegExp, target: radioInfo.dishCover},
+            {regExp: firmwareRegExp, target: radioInfo.firmware},
+            {regExp: lanSpeedRegExp, target: radioInfo.lanSpeed},
+            {regExp: programmingRegExp, target: radioInfo.programming},
+            {regExp: bestScannedSectorRegExp, target: radioInfo.bestScannedSector},
+            {regExp: routerModelRegExp, target: routerInfo.routerModel},
+            {regExp: routerChannelsRegExp, target: routerInfo.routerChannels},
+            {regExp: routerFirmwareRegExp, target: routerInfo.routerFirmware},
+            {regExp: remoteManagementRegExp, target: routerInfo.remoteManagement},
+            {regExp: supportTabRegExp, target: routerInfo.supportTab}
+
+        ]
 
         let startTimeRegExp = new RegExp(/Start Time\s*\n*\s*([0-9]{2}:[0-9]{2}\s*[AP]M)/);
         let endTimeRegExp = new RegExp(/End Time\s*\n*\s*([0-9]{2}:[0-9]{2}\s*[AP]M)/);        
@@ -164,120 +191,17 @@
 
             console.log(string);
 
-            let cip = startTimeRegExp.exec(string);
-            console.log(cip);
-            if(cip){
-                jobInfo.startTime = cip[1];
-            }
+            regexMappings.forEach(mapping => {
+                let cip = mapping.regExp.exec(string);
+                if(cip){
+                    mapping.target = cip[1];
+                }
+            })
 
-            cip = endTimeRegExp.exec(string);
+            //this one will pull from the jitter text area and parse based on that, not the string
+            cip = document.getElementById('jitterTextArea').value;
             if(cip){
-                jobInfo.endTime = cip[1];
-            }
-
-            cip = techNotesRegExp.exec(string);
-            if(cip){
-                jobInfo.techNotes = cip[1];
-            }
-
-            cip = mountRegExp.exec(string);
-            if(cip){
-                jobInfo.mount = cip[1];
-            }
-
-            cip = typeOfWireRegExp.exec(string);
-            if(cip){
-                jobInfo.typeOfWire = cip[1];
-            }
-
-            cip = wireLengthRegExp.exec(string);
-            if(cip){
-                jobInfo.wireLength = cip[1];
-            }
-            
-            cip = availableTowersRegExp.exec(string);
-            if(cip){
-                jobInfo.availableTowers = cip[1];
-            }
-
-            cip = signalRXRegExp.exec(string);
-            if(cip){
-                radioInfo.signalRX = cip[1];
-            }
-
-            cip = signalTXRegExp.exec(string);
-            if(cip){
-                radioInfo.signalTX = cip[1];
-            }
-
-            cip = modulationRegExp.exec(string);
-            if(cip){
-                radioInfo.modulation = cip[1];
-            }
-
-            cip = noiseFloorRegExp.exec(string);
-            if(cip){
-                radioInfo.noiseFloor = cip[1];
-            }
-
-            cip = radioAndDistanceRegExp.exec(string);
-            if(cip){
-                radioInfo.radioAndDistance = cip[1];
-            }
-
-            cip = dishCoverRegExp.exec(string);
-            if(cip){
-                radioInfo.dishCover = cip[1];
-            }
-
-            cip = firmwareRegExp.exec(string);
-            if(cip){
-                radioInfo.firmware = cip[1];
-            }
-
-            cip = lanSpeedRegExp.exec(string);
-            if(cip){
-                radioInfo.lanSpeed = cip[1];
-            }
-
-            cip =programmingRegExp.exec(string);
-            if(cip){
-                radioInfo.programming = cip[1];
-            }
-
-            cip = bestScannedSectorRegExp.exec(string);
-            if(cip){
-                radioInfo.bestScannedSector = cip[1];
-            }
-
-            cip = routerModelRegExp.exec(string);
-            if(cip){
-                routerInfo.routerModel = cip[1];
-            }
-            
-            cip = routerChannelsRegExp.exec(string);
-            if(cip){
-                routerInfo.routerChannels = cip[1];
-            }
-
-            cip = routerFirmwareRegExp.exec(string);
-            if(cip){
-                routerInfo.routerFirmware = cip[1];
-            }
-
-            cip = remoteManagementRegExp.exec(string);
-            if(cip){
-                routerInfo.remoteManagement = cip[1];
-            }
-
-            cip = supportTabRegExp.exec(string);
-            if(cip){
-                routerInfo.supportTab = cip[1];
-            }
-
-            cip = routerJitterRegExp.exec(string);
-            if(cip){
-                routerInfo.routerJitter = cip[1];
+                inventoryInfo.jitter = cip;
             }
 
             
