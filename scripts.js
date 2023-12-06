@@ -5,175 +5,91 @@
         document.getElementById('inputBox').addEventListener('input', parse);
 
 
-        let jobInfo = 
-        {
-            startTime: '',
-            endTime: '',
-            techNotes: '',
-            mount: '',
-            typeOfWire: '',
-            wireLength: '',
-            availableTowers: '',
+        const info = 
+        [
+            {heading: "Job Info \n", sectionHeader: ''},
 
-        }
+            {heading: "Start Time: ", contents: ''},
+            {heading: "End Time: ", contents: ''},
+            {heading: "Tech Notes: ", contents: ''},
+            {heading: "Mount: ", contents: ''},
+            {heading: "Type of Wire: ", contents: ''},
+            {heading: "Length of Wire: ", contents: ''},
+            {heading: "Available Towers: ", contents: ''},
 
-        let radioInfo = 
-        {
-            signalRX: '',
-            signalTX: '',
-            modulation: '',
-            noiseFloor: '',
-            radioAndDistance: '',
-            dishCover: '',
-            firmware: '',
-            lanSpeed: '',
-            programming: '',
-            bestScannedSector: '',
-        }
+            {heading: "\nRadio Info \n", sectionHeader: ''},
 
-        let inventoryInfo = 
-        {
-            safetyPic: false,
-            dashboardPic: false,
-            LOSPic: false,
-            mountFootingPic: false,
-            fromGroundPic: false,
-            wireRunPic: false,
-            outsidePenetrationPic: false,
-            insidePenetrationPic: false,
-            POERouterPic: false,
-            radioTagPic: false,
-            POETagPic: false,
-            surgeBoxTagPic: false,
-            routerTagPic: false,
-            speedTestPic: false,
-            jitter: ''
+            {heading: "Signal RX: ", contents: ''},
+            {heading: "Signal TX: ", contents: ''},
+            {heading: "Modulation: ", contents: ''},
+            {heading: "Noise Floor: ", contents: ''},
+            {heading: "Radio and Distance: ", contents: ''},
+            {heading: "Dish Cover: ", contents: ''},
+            {heading: "Firmware: ", contents: ''},
+            {heading: "LAN Speed: ", contents: ''},
 
-        }
-        
-        let routerInfo =
-        {
-            routerModel: '',
-            routerChannels: '',
-            routerFirmware: '',
-            remoteManagement: '',
-            supportTab: '',
-            routerJitter: '',
-        }
+            {heading: "Programming: ", contents: ''},
+            {heading: "Best Scanned Sector: ", contents: ''},
+
+            {heading: "\nInventory Info \n", sectionHeader: ''},
+
+            {heading: "Speed Test Jitter: ", contents: ''},
+
+            {heading: "\nRouter Info \n", sectionHeader: ''},
+
+            {heading: "Router Model: ", contents: ''},
+            {heading: "Router Channels: ", contents: ''},
+            {heading: "Router Firmware: ", contents: ''},
+            {heading: "Remote Management: ", contents: ''},
+            {heading: "Support Tab: ", contents: ''},
+            {heading: "Router Jitter: ", contents: ''},
+            
+        ]
 
         const regexMappings = 
         [
-            {regExp: startTimeRegExp, target: jobInfo.startTime},
-            {regExp: endTimeRegExp, target: jobInfo.endTime},
-            {regExp: techNotesRegExp, target: jobInfo.techNotes},
-            {regExp: mountRegExp, target: jobInfo.mount},
-            {regExp: typeOfWireRegExp, target: jobInfo.typeOfWire},
-            {regExp: wireLengthRegExp, target: jobInfo.wireLength},
-            {regExp: availableTowersRegExp, target: jobInfo.availableTowers},
-            {regExp: signalRXRegExp, target: radioInfo.signalRX},
-            {regExp: signalTXRegExp, target: radioInfo.signalTX},
-            {regExp: modulationRegExp, target: radioInfo.modulation},
-            {regExp: noiseFloorRegExp, target: radioInfo.noiseFloor},
-            {regExp: radioAndDistanceRegExp, target: radioInfo.radioAndDistance},
-            {regExp: dishCoverRegExp, target: radioInfo.dishCover},
-            {regExp: firmwareRegExp, target: radioInfo.firmware},
-            {regExp: lanSpeedRegExp, target: radioInfo.lanSpeed},
-            {regExp: programmingRegExp, target: radioInfo.programming},
-            {regExp: bestScannedSectorRegExp, target: radioInfo.bestScannedSector},
-            {regExp: routerModelRegExp, target: routerInfo.routerModel},
-            {regExp: routerChannelsRegExp, target: routerInfo.routerChannels},
-            {regExp: routerFirmwareRegExp, target: routerInfo.routerFirmware},
-            {regExp: remoteManagementRegExp, target: routerInfo.remoteManagement},
-            {regExp: supportTabRegExp, target: routerInfo.supportTab}
+            {regExp: new RegExp(/Start Time\s*\n*\s*([0-9]{2}:[0-9]{2}\s*[AP]M)/), target: findInfoByHeading("Start Time: ")},
+            {regExp: new RegExp(/End Time\s*\n*\s*([0-9]{2}:[0-9]{2}\s*[AP]M)/), target: findInfoByHeading("End Time: ")},
+            {regExp: new RegExp(/\bTech Notes\s*(.*)\b/), target: findInfoByHeading("Tech Notes: ")},
+            {regExp: new RegExp(/\bMount\s*\n*\r*(.*?)\n/), target: findInfoByHeading("Mount: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Type of Wire: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Length of Wire: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Available Towers: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Signal RX: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Signal TX: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Modulation: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Noise Floor: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Radio and Distance: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Dish Cover: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Firmware: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("LAN Speed: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Programming: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Best Scanned Sector: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Router Model: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Router Channels: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Router Firmware: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Remote Management: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Support Tab: ")},
+            {regExp: new RegExp(), target: findInfoByHeading("Router Jitter: ")},
 
         ]
-
-        let startTimeRegExp = new RegExp(/Start Time\s*\n*\s*([0-9]{2}:[0-9]{2}\s*[AP]M)/);
-        let endTimeRegExp = new RegExp(/End Time\s*\n*\s*([0-9]{2}:[0-9]{2}\s*[AP]M)/);        
-        let techNotesRegExp = new RegExp(/\bTech Notes\s*(.*)\b/);
-        let mountRegExp = new RegExp(/\bMount\s*\n*\r*(.*?)\n/);
-        let typeOfWireRegExp = new RegExp();
-        let wireLengthRegExp = new RegExp();
-        let availableTowersRegExp = new RegExp();
-
-        let signalRXRegExp = new RegExp();
-        let signalTXRegExp = new RegExp();
-        let modulationRegExp = new RegExp();
-        let noiseFloorRegExp = new RegExp();
-        let radioAndDistanceRegExp = new RegExp();
-        let dishCoverRegExp = new RegExp();
-        let firmwareRegExp = new RegExp();
-        let lanSpeedRegExp = new RegExp();
-        let programmingRegExp = new RegExp();
-        let bestScannedSectorRegExp = new RegExp();
-
-        let routerModelRegExp = new RegExp();
-        let routerChannelsRegExp = new RegExp();
-        let routerFirmwareRegExp = new RegExp();
-        let remoteManagementRegExp = new RegExp();
-        let supportTabRegExp = new RegExp();
-        let routerJitterRegExp = new RegExp();
         
+        //Should return the object found, not the contents
+        function findInfoByHeading(heading)
+        {
+            return info.find(info => info.heading === heading);
+
+        }
 
         function clearMemory()
         {
             combinedText = '';
 
-            jobInfo =
+            info.forEach(mapping => 
             {
-                startTime: '',
-                endTime: '',
-                techNotes: '',
-                mount: '',
-                typeOfWire: '',
-                wireLength: '',
-                availableTowers: '',
-        
-            }
-
-            radioInfo =
-            {
-                signalRX: '',
-                signalTX: '',
-                modulation: '',
-                noiseFloor: '',
-                radioAndDistance: '',
-                dishCover: '',
-                firmware: '',
-                lanSpeed: '',
-                programming: '',
-                bestScannedSector: '',
-            }
-
-            inventoryInfo =
-            {
-                safetyPic: false,
-                dashboardPic: false,
-                LOSPic: false,
-                mountFootingPic: false,
-                fromGroundPic: false,
-                wireRunPic: false,
-                outsidePenetrationPic: false,
-                insidePenetrationPic: false,
-                POERouterPic: false,
-                radioTagPic: false,
-                POETagPic: false,
-                surgeBoxTagPic: false,
-                routerTagPic: false,
-                speedTestPic: false,
-                jitter: ''
-        
-            }
-
-            routerInfo =
-            {
-                routerModel: '',
-                routerChannels: '',
-                routerFirmware: '',
-                remoteManagement: '',
-                supportTab: '',
-                routerJitter: '',
-            }
+                if("contents" in mapping)
+                    mapping.contents = '';
+            });
 
             clearTextBoxes();
 
@@ -181,7 +97,6 @@
             {
                 checkbox.checked = false;
             });
-
             
         }
 
@@ -196,68 +111,34 @@
                 if(cip){
                     mapping.target = cip[1];
                 }
-            })
-
-            //this one will pull from the jitter text area and parse based on that, not the string
-            cip = document.getElementById('jitterTextArea').value;
-            if(cip){
-                inventoryInfo.jitter = cip;
-            }
-
+            });
             
-            pushCurrentInfo();
+            generateCombinedText(false);
 
             clearParseTextBox();
 
         }
 
-        function pushCurrentInfo()
-        {
-            //needs to take the current result of generateCombinedText and put it into the current output text box
-            generateCombinedText(false);
-
-
-        }
-
-        function generateCombinedText(bool) 
+        function generateCombinedText(copyBOOL) 
         {
             combinedText = '';
 
-            combinedText += 'Job Information \n';
-            addTextIfNotEmpty(jobInfo.startTime, "Start Time");
-            addTextIfNotEmpty(jobInfo.endTime, "End Time");
-            addTextIfNotEmpty(jobInfo.techNotes, "Tech Notes");
-            addTextIfNotEmpty(jobInfo.mount, "Mount");
-            addTextIfNotEmpty(jobInfo.typeOfWire, "Type of Wire");
-            addTextIfNotEmpty(jobInfo.wireLength, "Length of Wire");
-            addTextIfNotEmpty(jobInfo.availableTowers, "Available Towers");
+            info.forEach(mapping => 
+            {
 
-            combinedText += '\nRadio Information \n';
-            addTextIfNotEmpty(radioInfo.signalRX, "Signal RX");
-            addTextIfNotEmpty(radioInfo.signalTX, "Signal TX");
-            addTextIfNotEmpty(radioInfo.modulation, "Modulation");
-            addTextIfNotEmpty(radioInfo.noiseFloor, "Noise Floor");
-            addTextIfNotEmpty(radioInfo.radioAndDistance, "Radio and Distance");
-            addTextIfNotEmpty(radioInfo.dishCover, "Dish Cover");
-            addTextIfNotEmpty(radioInfo.firmware, "Firmware");
-            addTextIfNotEmpty(radioInfo.lanSpeed, "LAN Speed");
-            addTextIfNotEmpty(radioInfo.programming, "Programming");
-            addTextIfNotEmpty(radioInfo.bestScannedSector, "Best Scanned Sector");
+                if("sectionHeader" in mapping && mapping.heading != "\nInventory Info \n")
+                {
+                    addTextIfNotEmpty(infoValues[0], infoValues[1]);
+                }
+                else
+                {
+                    addTextFromCheckBox();
+                }
 
-            combinedText += '\nInventory Information \n';
-            addTextFromCheckBox();
+            });
 
-            combinedText += "Router Information \n";
-            addTextIfNotEmpty(routerInfo.routerModel, "Router Model");
-            addTextIfNotEmpty(routerInfo.routerChannels, "Router Channels");
-            addTextIfNotEmpty(routerInfo.routerFirmware, "Router Firmware");
-            addTextIfNotEmpty(routerInfo.remoteManagement, "Remote Management");
-            addTextIfNotEmpty(routerInfo.supportTab, "Support Tab");
-            addTextIfNotEmpty(routerInfo.routerJitter, "Router Jitter");
-
-        
-
-            if(bool)
+                
+            if(copyBOOL)
             {
                 copyToClipBoard(combinedText);
             }
@@ -265,9 +146,9 @@
             document.getElementById('currentOutput').value = combinedText;
 
 
-
         }
 
+        //If we ever remove the checkboxes this whole structure should just be refactorable into the other form of info
         function addTextFromCheckBox()
         {
             var checkBoxes = document.querySelectorAll('input[type=checkbox]');
@@ -284,16 +165,18 @@
                 }
             });
 
-            combinedText += "Jitter: " + inventoryInfo.jitter + "\n\n";
+            let jitterObj = findInfoByHeading("Speed Test Jitter: ");
+
+            combinedText += jitterObj.heading + " " + jitterObj.contents +  "\n";
         }
 
-        function addTextIfNotEmpty(string, header)
+        function addTextIfNotEmpty(header, string)
         {
             if(string){
-                combinedText += header + ": " +string + "\n";
+                combinedText += header + " " +string + "\n";
             }
             else{
-                combinedText += header + ": \n";
+                combinedText += header + " \n";
             }
 
         }
@@ -336,20 +219,20 @@
 
             var buttons = [
 
-                {id: "safetyPicButton", label: "Safety"},
-                {id: "dashboardPicButton", label: "Dashboard"},
-                {id: "LOSPicButton", label: "LOS"},
-                {id: "mountFootingPicButton", label: "Mount Footing"},
-                {id: "fromGroundPicButton", label: "From Ground"},
-                {id: "wireRunPicButton", label: "Wire Run"},
-                {id: "outsidePenetrationPicButton", label: "Outside Penetration"},
-                {id: "insidePenetrationPicButton", label: "Inside Penetration"},
-                {id: "POERouterPicButton", label: "POE Router"},
-                {id: "radioTagPicButton", label: "Radio Tag"},
-                {id: "POETagPicButton", label: "POE Tag"},
-                {id: "surgeBoxTagPicButton", label: "Surge Box Tag"},
-                {id: "routerTagPicButton", label: "Router Tag"},
-                {id: "speedTestPicButton", label: "Speed Test"},
+                {id: "safetyPicButton", label: "Safety: "},
+                {id: "dashboardPicButton", label: "Dashboard: "},
+                {id: "LOSPicButton", label: "LOS: "},
+                {id: "mountFootingPicButton", label: "Mount Footing: "},
+                {id: "fromGroundPicButton", label: "From Ground: "},
+                {id: "wireRunPicButton", label: "Wire Run: "},
+                {id: "outsidePenetrationPicButton", label: "Outside Penetration: "},
+                {id: "insidePenetrationPicButton", label: "Inside Penetration: "},
+                {id: "POERouterPicButton", label: "POE Router: "},
+                {id: "radioTagPicButton", label: "Radio Tag: "},
+                {id: "POETagPicButton", label: "POE Tag: "},
+                {id: "surgeBoxTagPicButton", label: "Surge Box Tag: "},
+                {id: "routerTagPicButton", label: "Router Tag: "},
+                {id: "speedTestPicButton", label: "Speed Test: "},
 
             ];
 
