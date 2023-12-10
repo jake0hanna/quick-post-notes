@@ -72,15 +72,15 @@
 
         const regexMappings = 
         [
-            {regExp: new RegExp(/Start Time\s*\n*\s*([0-9]{2}:[0-9]{2}\s*[AP]M)/), target: findInfoByHeading("Start Time: ")},
-            {regExp: new RegExp(/End Time\s*\n*\s*([0-9]{2}:[0-9]{2}\s*[AP]M)/), target: findInfoByHeading("End Time: ")},
-            {regExp: new RegExp(/\bTech Notes\s*(.*)\b/), target: findInfoByHeading("Tech Notes: ")},
+            {regExp: new RegExp(/Actual Start Time\s+([\d:]+ [APM]+)/), target: findInfoByHeading("Start Time: ")},
+            {regExp: new RegExp(/Actual End Time\s+([\d:]+ [APM]+)/), target: findInfoByHeading("End Time: ")},
+            {regExp: new RegExp(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\n(.+?)(?=\n\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}|\n\w+)/), target: findInfoByHeading("Tech Notes: ")},
             {regExp: new RegExp(/\bMount\s*\n*\r*(.*?)\n/), target: findInfoByHeading("Mount: ")},
             //{regExp: new RegExp(), target: findInfoByHeading("Type of Wire: ")},
             //{regExp: new RegExp(), target: findInfoByHeading("Length of Wire: ")},
             //{regExp: new RegExp(), target: findInfoByHeading("Available Towers: ")},
-            {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?\bSIGNAL\s+(-?\d+)/), target: findInfoByHeading("Signal RX: ")},
-            {regExp: new RegExp(/REMOTE DEVICE[\s\S]*?\bSIGNAL\s+(-?\d+)/), target: findInfoByHeading("Signal TX: ")},
+            {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?SIGNAL (-?\d+ \(-?\d+ \/ -?\d+\) Δ\d+ dBm)/), target: findInfoByHeading("Signal RX: ")},
+            {regExp: new RegExp(/REMOTE DEVICE[\s\S]*?SIGNAL (-?\d+ \(-?\d+ \/ -?\d+\) Δ\d+ dBm)/), target: findInfoByHeading("Signal TX: ")},
             {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?LOCAL RX DATA RATE\s+([\s\S]*?)(?=\nEXPECTED RATE)/), target: findInfoByHeading("Modulation: ")},
             {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?\bNOISE FLOOR\s+(-?\d+ dBm)/), target: findInfoByHeading("Noise Floor: ")},
             {regExp: new RegExp(/DEVICE MODEL\n(.+?)\n/g), target: findInfoByHeading("Radio and ")},
@@ -126,6 +126,8 @@
 
         function parse()
         {
+            findInfoByHeading("Speed Test Jitter: ").contents = document.getElementById('jitterTextArea').value;
+
             let string = document.getElementById('inputBox').value;
 
             regexMappings.forEach(mapping => {
