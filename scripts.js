@@ -1,9 +1,7 @@
         var combinedText = '';
         var textAreaPlaceholder = 'Enter text here...';
 
-        //these need to wait until the entire page is loaded to run:
         document.addEventListener('DOMContentLoaded', initialLoad);
-        document.getElementById('inputBox').addEventListener('input', parse);
 
         var textAreas = [
             {id: "inputBox", label: "Parse Text:"},
@@ -48,7 +46,8 @@
             {heading: "Signal TX: ", contents: ''},
             {heading: "Modulation: ", contents: ''},
             {heading: "Noise Floor: ", contents: ''},
-            {heading: "Radio and Distance: ", contents: ''},
+            {heading: "Radio and ", contents: ''},
+            {heading: "Distance: ", contents: ''},
             {heading: "Dish Cover: ", contents: ''},
             {heading: "Firmware: ", contents: ''},
             {heading: "LAN Speed: ", contents: ''},
@@ -77,33 +76,33 @@
             {regExp: new RegExp(/End Time\s*\n*\s*([0-9]{2}:[0-9]{2}\s*[AP]M)/), target: findInfoByHeading("End Time: ")},
             {regExp: new RegExp(/\bTech Notes\s*(.*)\b/), target: findInfoByHeading("Tech Notes: ")},
             {regExp: new RegExp(/\bMount\s*\n*\r*(.*?)\n/), target: findInfoByHeading("Mount: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Type of Wire: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Length of Wire: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Available Towers: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Signal RX: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Signal TX: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Modulation: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Noise Floor: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Radio and Distance: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Dish Cover: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Firmware: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("LAN Speed: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Programming: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Best Scanned Sector: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Router Model: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Router Channels: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Router Firmware: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Remote Management: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Support Tab: ")},
-            {regExp: new RegExp(), target: findInfoByHeading("Router Jitter: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Type of Wire: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Length of Wire: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Available Towers: ")},
+            {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?\bSIGNAL\s+(-?\d+)/), target: findInfoByHeading("Signal RX: ")},
+            {regExp: new RegExp(/REMOTE DEVICE[\s\S]*?\bSIGNAL\s+(-?\d+)/), target: findInfoByHeading("Signal TX: ")},
+            {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?LOCAL RX DATA RATE\s+([\s\S]*?)(?=\nEXPECTED RATE)/), target: findInfoByHeading("Modulation: ")},
+            {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?\bNOISE FLOOR\s+(-?\d+ dBm)/), target: findInfoByHeading("Noise Floor: ")},
+            {regExp: new RegExp(/DEVICE MODEL\n(.+?)\n/g), target: findInfoByHeading("Radio and ")},
+            {regExp: new RegExp(/Mbps\s+([\d.]+\s+mi)/), target: findInfoByHeading("Distance: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Dish Cover: ")},
+            {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?VERSION\nv([\d.]+) \(/g), target: findInfoByHeading("Firmware: ")},
+            {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?LAN SPEED\n([\d]+ Mbps)/g), target: findInfoByHeading("LAN Speed: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Programming: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Best Scanned Sector: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Router Model: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Router Channels: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Router Firmware: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Remote Management: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Support Tab: ")},
+            //{regExp: new RegExp(), target: findInfoByHeading("Router Jitter: ")},
 
         ]
         
         //Should return the object found, not the contents
         function findInfoByHeading(heading)
         {
-            return info.find(info => info.heading === heading);
-
+            return info.find(infoItem => infoItem.heading === heading);
         }
 
         function clearMemory()
@@ -129,10 +128,10 @@
         {
             let string = document.getElementById('inputBox').value;
 
-            console.log(string);
-
             regexMappings.forEach(mapping => {
                 let cip = mapping.regExp.exec(string);
+                console.log(mapping);
+                console.log(mapping.regExp.exec(string));
                 if(cip){
                     mapping.target.contents = cip[1];
                 }
@@ -150,15 +149,12 @@
 
             info.forEach(mapping => 
             {
-
-                if("sectionHeader" in mapping && mapping.heading != "\nInventory Info \n")
-                {
-                    if("contents" in mapping)
-                        addTextIfNotEmpty(mapping.heading, mapping.contents);
-                    else
-                        addTextIfNotEmpty(mapping.heading, '');
-                }
+                if("contents" in mapping)
+                    addToOutputText(mapping.heading, mapping.contents);
                 else
+                    addToOutputText(mapping.heading, '');
+                
+                if(mapping.heading === "\nInventory Info")
                 {
                     addTextFromCheckBox();
                 }
@@ -193,22 +189,34 @@
                 }
             });
 
-            let jitterObj = findInfoByHeading("Speed Test Jitter: ");
-
-            combinedText += jitterObj.heading + " " + jitterObj.contents +  "\n";
         }
 
-        function addTextIfNotEmpty(header, string)
+        //This got a little messy because we don't want to handle distance alone
+        function addToOutputText(header, string) 
         {
-            if(string){
-                combinedText += header + " " +string + "\n";
-            }
-            else{
-                combinedText += header + " \n";
-            }
+            if (header === "Radio and ") 
+            {
+                var distanceEntry = findInfoByHeading("Distance: ");
+        
+                combinedText += header + "Distance: ";
 
+                if(string)
+                    combinedText += "" + string;
+                
+                if(distanceEntry.contents)
+                    combinedText += ", " + distanceEntry.contents + "\n";
+
+            }
+            else if (header !== "Distance: ") 
+            {
+                if (string) {
+                    combinedText += header + string + "\n";
+                } else {
+                    combinedText += header + "\n";
+                }
+            }
         }
-
+        
         function copyToClipBoard(copyableText)
         {
             navigator.clipboard.writeText(copyableText).then(function() 
@@ -294,6 +302,19 @@
 
             container.appendChild(textAreaDiv);
 
+            document.getElementById('inputBox').addEventListener('input', parse);
 
-
+            var checkboxDivs = document.getElementsByClassName('checkboxDiv');
+            for (var i = 0; i < checkboxDivs.length; i++) 
+            {
+                var inputs = checkboxDivs[i].getElementsByTagName('input');
+                for (var j = 0; j < inputs.length; j++) 
+                {
+                    if (inputs[j].type === 'checkbox') 
+                    {
+                        inputs[j].addEventListener('change', parse);
+                    }
+                }
+            }
+            
         };
