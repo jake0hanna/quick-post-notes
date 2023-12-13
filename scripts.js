@@ -8,6 +8,13 @@
             {id: "currentOutput", label: "Current Output:"},
         ];
 
+        var pictureInputBoxes = [
+            {id: "radioTagPicInput", label: "Radio Tag: "},
+            {id: "POETagPicInput", label: "POE Tag: "},
+            {id: "surgeBoxTagPicInput", label: "Surge Box Tag: "},
+            {id: "routerTagPicInput", label: "Router Tag: "},
+        ]
+
         var buttons = [
 
             {id: "safetyPicButton", label: "Safety: "},
@@ -43,9 +50,11 @@
             {heading: "\nRadio Info", sectionHeader: ''},
 
             {heading: "Signal RX: ", contents: ''},
-            {heading: "Signal TX: ", contents: ''},
-            {heading: "Modulation: ", contents: ''},
+            {heading: ", S-TX: ", contents: ''},
+            {heading: "Modulation RX: ", contents: ''},
+            {heading: ", M-TX: ", contents: ''},
             {heading: "Noise Floor: ", contents: ''},
+            {heading: ", NF-TX: ", contents: ''},
             {heading: "Radio and ", contents: ''},
             {heading: "Distance: ", contents: ''},
             {heading: "Dish Cover: ", contents: ''},
@@ -54,8 +63,9 @@
 
             {heading: "Programming: ", contents: ''},
             {heading: "Best Scanned Sector: ", contents: ''},
+            {heading: "Inventory Info:", contents: ''},
 
-            {heading: "\nInventory Info", sectionHeader: ''},
+            {heading: "\nPictures", sectionHeader: ''},
 
             {heading: "Speed Test Jitter: ", contents: ''},
 
@@ -80,9 +90,11 @@
             //{regExp: new RegExp(), target: findInfoByHeading("Length of Wire: ")},
             //{regExp: new RegExp(), target: findInfoByHeading("Available Towers: ")},
             {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?SIGNAL (-?\d+ \(-?\d+ \/ -?\d+\) Δ\d+ dBm)/), target: findInfoByHeading("Signal RX: ")},
-            {regExp: new RegExp(/REMOTE DEVICE[\s\S]*?SIGNAL (-?\d+ \(-?\d+ \/ -?\d+\) Δ\d+ dBm)/), target: findInfoByHeading("Signal TX: ")},
+            {regExp: new RegExp(/REMOTE DEVICE[\s\S]*?SIGNAL (-?\d+ \(-?\d+ \/ -?\d+\) Δ\d+ dBm)/), target: findInfoByHeading(", S-TX: ")},
             {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?LOCAL RX DATA RATE\s+([\s\S]*?)(?=\nEXPECTED RATE)/), target: findInfoByHeading("Modulation: ")},
+            {regExp: new RegExp(), target: findInfoByHeading(", M-TX: ")},
             {regExp: new RegExp(/LOCAL DEVICE[\s\S]*?\bNOISE FLOOR\s+(-?\d+ dBm)/), target: findInfoByHeading("Noise Floor: ")},
+            {regExp: new RegExp(/REMOTE DEVICE[\s\S]*?\bNOISE FLOOR\s+(-?\d+ dBm)/), target: findInfoByHeading(", NF-TX: ")},
             {regExp: new RegExp(/DEVICE MODEL\n(.+?)\n/g), target: findInfoByHeading("Radio and ")},
             {regExp: new RegExp(/Mbps\s+([\d.]+\s+mi)/), target: findInfoByHeading("Distance: ")},
             //{regExp: new RegExp(), target: findInfoByHeading("Dish Cover: ")},
@@ -138,11 +150,31 @@
                     mapping.target.contents = cip[1];
                 }
             });
+
+
             
             generateCombinedText(false);
 
             clearParseTextBox();
 
+        }
+
+        function pullFromTextAreas()
+        {
+            pictureInputBoxes.forEach(function(pictureInputBox)
+            {
+                //should just grab any info from the text area and put it in the corresponding object in info
+                var textArea = document.getElementById(pictureInputBox.id);
+                var infoItem = findInfoByHeading(pictureInputBox.label);
+                if (textArea && infoItem) 
+                {
+                    infoItem.contents = textArea.value;
+                }
+
+            }
+            );
+            
+            
         }
 
         function generateCombinedText(copyBOOL) 
@@ -156,7 +188,7 @@
                 else
                     addToOutputText(mapping.heading, '');
                 
-                if(mapping.heading === "\nInventory Info")
+                if(mapping.heading === "\nPictures")
                 {
                     addTextFromCheckBox();
                 }
@@ -173,27 +205,45 @@
 
 
         }
-
-        //If we ever remove the checkboxes this whole structure should just be refactorable into the other form of info
-        function addTextFromCheckBox()
-        {
-            var checkBoxes = document.querySelectorAll('input[type=checkbox]');
-            checkBoxes.forEach(function(checkbox) 
-            {
-                
-                var labelText = checkbox.nextElementSibling.textContent;
-
-                if(checkbox.checked){
-                    combinedText += labelText + ": GOOD\n";
+        function addTextFromCheckBox() {
+            buttons.forEach(function(buttonItem) {
+                var checkbox = document.getElementById(buttonItem.id);
+                var labelText = buttonItem.label.slice(0, -2); // Removes the trailing ": "
+                var textToAdd = labelText + ": ";
+        
+                // Check if this checkbox corresponds to a picture input box
+                var correspondingPictureInputBox = pictureInputBoxes.find(pictureInputBox => 
+                    pictureInputBox.id === buttonItem.id.replace('PicButton', 'PicInput'));
+        
+                if (correspondingPictureInputBox) {
+                    // Checkbox has an associated picture input box
+                    var pictureInput = document.getElementById(correspondingPictureInputBox.id);
+        
+                    if (checkbox.checked) {
+                        if (pictureInput && pictureInput.value.trim() !== '') {
+                            // Checkbox is checked and the input box has content
+                            textToAdd += pictureInput.value.trim();
+                        } else {
+                            // Checkbox is checked but the input box is empty
+                            textToAdd += "BAD";
+                        }
+                    } else {
+                        // Checkbox is unchecked
+                        textToAdd += "N/A";
+                    }
+                } else {
+                    // Checkbox does not have an associated picture input box
+                    textToAdd += checkbox.checked ? "GOOD" : "BAD";
                 }
-                else{
-                    combinedText += labelText + ": BAD\n";
-                }
+        
+                combinedText += textToAdd + "\n";
             });
-
         }
+        
+        
+        
 
-        //This got a little messy because we don't want to handle distance alone
+        //This got a little messy because we don't want to handle certain tags alone
         function addToOutputText(header, string) 
         {
             if (header === "Radio and ") 
@@ -206,10 +256,60 @@
                     combinedText += "" + string;
                 
                 if(distanceEntry.contents)
-                    combinedText += ", " + distanceEntry.contents + "\n";
+                    combinedText += ", " + distanceEntry.contents;
+
+                combinedText += "\n";
 
             }
-            else if (header !== "Distance: ") 
+            else if (header === "Signal RX: ")
+            {
+
+                var signalTXEntry = findInfoByHeading(", S-TX: ");
+
+                combinedText += header + ", S-TX: ";
+
+                if(string)
+                    combinedText += "" + string;
+
+                if(signalTXEntry.contents)
+                    combinedText += ", " + signalTXEntry.contents;
+                
+                combinedText +=  "\n";
+
+
+            }
+            else if (header === "Modulation RX: ")
+            {
+
+                var modulationTXEntry = findInfoByHeading(", M-TX: ");
+
+                combinedText += header + ", M-TX: ";
+
+                if(string)
+                    combinedText += "" + string;
+
+                if(modulationTXEntry.contents)
+                    combinedText += ", " + modulationTXEntry.contents;
+
+                combinedText += "\n";
+
+            }
+            else if (header === "Noise Floor: ")
+            {
+                    
+                    var noiseFloorTXEntry = findInfoByHeading(", NF-TX: ");
+    
+                    combinedText += header + ", NF-TX: ";
+    
+                    if(string)
+                        combinedText += "" + string;
+    
+                    if(noiseFloorTXEntry.contents)
+                        combinedText += ", " + noiseFloorTXEntry.contents;
+                    
+                    combinedText += "\n";
+            }
+            else if (header !== "Distance: " && header !== ", S-TX: " && header !== ", M-TX: " && header !== ", NF-TX: ") 
             {
                 if (string) {
                     combinedText += header + string + "\n";
@@ -217,6 +317,9 @@
                     combinedText += header + "\n";
                 }
             }
+
+
+            
         }
         
         function copyToClipBoard(copyableText)
@@ -318,5 +421,47 @@
                     }
                 }
             }
+
+            var pictureInputContainer = document.createElement('div');
+            pictureInputContainer.className = 'pictureInputContainer';
+            container.appendChild(pictureInputContainer);
+        
+            pictureInputBoxes.forEach(function(pictureInputBox) {
+                var inputDiv = document.createElement('div');
+                inputDiv.className = 'inputDiv';
+                inputDiv.id = pictureInputBox.id + 'Div';
+                inputDiv.style.display = 'none'; // Initially hide the input boxes
+        
+                var label = document.createElement('label');
+                label.htmlFor = pictureInputBox.id;
+                label.textContent = pictureInputBox.label;
+        
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.id = pictureInputBox.id;
+        
+                inputDiv.appendChild(label);
+                inputDiv.appendChild(input);
+                pictureInputContainer.appendChild(inputDiv);
+            });
             
+            buttons.forEach(function(buttonItem) 
+            {
+                var checkbox = document.getElementById(buttonItem.id);
+                if (checkbox) 
+                {
+                    checkbox.addEventListener('change', function() {
+                        var inputDiv = document.getElementById(buttonItem.id.replace('PicButton', 'PicInput') + 'Div');
+                        if (inputDiv) {
+                            if (checkbox.checked) {
+                                inputDiv.style.display = 'block'; // Show the input box
+                            } else {
+                                inputDiv.style.display = 'none'; // Hide the input box
+                            }
+                        }
+                    });
+                    
+                }
+            });
+        
         };
